@@ -26,15 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
           <p><strong>Participants:</strong></p>
-          <ul style="list-style: none; margin-left: 0; padding-left: 0;">
-            ${details.participants.length > 0 ? details.participants.map(email => `<li style="margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;"><span>${email}</span><button class="delete-btn" data-activity="${name}" data-email="${email}" style="background-color: #d32f2f; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; transition: background-color 0.2s;">Delete</button></li>`).join('') : '<li>No participants yet</li>'}
+          <ul class="participants-list">
+            ${details.participants.length > 0 ? details.participants.map(email => `<li class="participant-item"><div class="participant-info"><span class="participant-email">${email}</span></div><button class="delete-participant-btn" data-activity="${name}" data-email="${email}">Delete</button></li>`).join('') : '<li>No participants yet</li>'}
           </ul>
         `;
 
         activitiesList.appendChild(activityCard);
 
         // Add delete button click handlers
-        activityCard.querySelectorAll(".delete-btn").forEach(btn => {
+        activityCard.querySelectorAll(".delete-participant-btn").forEach(btn => {
           btn.addEventListener("click", async (e) => {
             e.preventDefault();
             const activity = btn.dataset.activity;
@@ -48,13 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
               
               if (response.ok) {
                 messageDiv.textContent = `${email} unregistered from ${activity}`;
-                messageDiv.className = "success";
+                messageDiv.className = "message success";
                 messageDiv.classList.remove("hidden");
                 fetchActivities(); // Refresh the activities list
               } else {
                 const result = await response.json();
                 messageDiv.textContent = result.detail || "Failed to unregister";
-                messageDiv.className = "error";
+                messageDiv.className = "message error";
                 messageDiv.classList.remove("hidden");
               }
               
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
               }, 5000);
             } catch (error) {
               messageDiv.textContent = "Failed to unregister. Please try again.";
-              messageDiv.className = "error";
+              messageDiv.className = "message error";
               messageDiv.classList.remove("hidden");
               console.error("Error unregistering:", error);
             }
@@ -101,12 +101,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         messageDiv.textContent = result.message;
-        messageDiv.className = "success";
+        messageDiv.className = "message success";
         signupForm.reset();
         fetchActivities(); // Refresh the activities list
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
-        messageDiv.className = "error";
+        messageDiv.className = "message error";
       }
 
       messageDiv.classList.remove("hidden");
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 5000);
     } catch (error) {
       messageDiv.textContent = "Failed to sign up. Please try again.";
-      messageDiv.className = "error";
+      messageDiv.className = "message error";
       messageDiv.classList.remove("hidden");
       console.error("Error signing up:", error);
     }
